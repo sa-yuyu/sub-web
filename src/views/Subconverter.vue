@@ -91,103 +91,14 @@
         </el-card>
       </el-col>
     </el-row>
-
-    <el-dialog
-      :visible.sync="dialogUploadConfigVisible"
-      :show-close="false"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      width="700px"
-    >
-      <div slot="title">
-        Remote config upload
-        <el-popover trigger="hover" placement="right" style="margin-left: 10px">
-          <el-link
-            type="primary"
-            :href="sampleConfig"
-            target="_blank"
-            icon="el-icon-info"
-            >参考配置</el-link
-          >
-          <i class="el-icon-question" slot="reference"></i>
-        </el-popover>
-      </div>
-      <el-form label-position="left">
-        <el-form-item prop="uploadConfig">
-          <el-input
-            v-model="uploadConfig"
-            type="textarea"
-            :autosize="{ minRows: 15, maxRows: 15 }"
-            maxlength="5000"
-            show-word-limit
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button
-          @click="
-            uploadConfig = '';
-            dialogUploadConfigVisible = false;
-          "
-          >取 消</el-button
-        >
-        <el-button
-          type="primary"
-          @click="confirmUploadConfig"
-          :disabled="uploadConfig.length === 0"
-          >确 定</el-button
-        >
-      </div>
-    </el-dialog>
-
-    <el-dialog
-      :visible.sync="dialogLoadConfigVisible"
-      :show-close="false"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      width="700px"
-    >
-      <div slot="title">可以从老的订阅信息中解析信息,填入页面中去</div>
-      <el-form label-position="left">
-        <el-form-item prop="uploadConfig">
-          <el-input
-            v-model="loadConfig"
-            type="textarea"
-            :autosize="{ minRows: 15, maxRows: 15 }"
-            maxlength="5000"
-            show-word-limit
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button
-          @click="
-            loadConfig = '';
-            dialogLoadConfigVisible = false;
-          "
-          >取 消</el-button
-        >
-        <el-button
-          type="primary"
-          @click="confirmLoadConfig"
-          :disabled="loadConfig.length === 0"
-          >确 定</el-button
-        >
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-const project = process.env.VUE_APP_PROJECT;
-const remoteConfigSample = process.env.VUE_APP_SUBCONVERTER_REMOTE_CONFIG;
-const gayhubRelease = process.env.VUE_APP_BACKEND_RELEASE;
 const defaultBackend =
   process.env.VUE_APP_SUBCONVERTER_DEFAULT_BACKEND + "/sub?";
 const shortUrlBackend = process.env.VUE_APP_MYURLS_DEFAULT_BACKEND + "/short";
-const configUploadBackend =
-  process.env.VUE_APP_CONFIG_UPLOAD_BACKEND + "/config/upload";
-const tgBotLink = process.env.VUE_APP_BOT_LINK;
+
 
 export default {
   data() {
@@ -199,140 +110,18 @@ export default {
       isPC: true,
 
       options: {
-        clientTypes: {
-          Clash: "clash",
-          Surge3: "surge&ver=3",
-          Surge4: "surge&ver=4",
-          Quantumult: "quan",
-          QuantumultX: "quanx",
-          Surfboard: "surfboard",
-          Loon: "loon",
-          SSAndroid: "sssub",
-          V2Ray: "v2ray",
-          ss: "ss",
-          ssr: "ssr",
-          ssd: "ssd",
-          ClashR: "clashr",
-          Surge2: "surge&ver=2",
-        },
-        backendOptions: [{ value: "http://127.0.0.1:25500/sub?" }],
-        remoteConfig: [
-          {
-            label: "universal",
-            options: [
-              {
-                label: "No-Urltest",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/universal/no-urltest.ini",
-              },
-              {
-                label: "Urltest",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/universal/urltest.ini",
-              },
-            ],
-          },
-          {
-            label: "customized",
-            options: [
-              {
-                label: "Maying",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/maying.ini",
-              },
-              {
-                label: "Ytoo",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/ytoo.ini",
-              },
-              {
-                label: "FlowerCloud",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/flowercloud.ini",
-              },
-              {
-                label: "Nexitally",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/nexitally.ini",
-              },
-              {
-                label: "SoCloud",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/socloud.ini",
-              },
-              {
-                label: "ARK",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/ark.ini",
-              },
-              {
-                label: "ssrCloud",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/customized/ssrcloud.ini",
-              },
-            ],
-          },
-          {
-            label: "Special",
-            options: [
-              {
-                label: "NeteaseUnblock(仅规则，No-Urltest)",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/special/netease.ini",
-              },
-              {
-                label: "Basic(仅GEOIP CN + Final)",
-                value:
-                  "https://cdn.jsdelivr.net/gh/SleepyHeeead/subconverter-config@master/remote-config/special/basic.ini",
-              },
-            ],
-          },
-        ],
+        backendOptions: [{ value: "http://127.0.0.1:25500/sub?" }]
       },
       form: {
         sourceSubUrl: "",
         clientType: "",
         customBackend: "",
-        remoteConfig: "",
-        excludeRemarks: "",
-        includeRemarks: "",
-        filename: "",
-        emoji: true,
-        nodeList: false,
-        extraset: false,
-        sort: false,
-        udp: false,
-        tfo: false,
-        scv: true,
-        fdn: false,
-        appendType: false,
-        insert: false, // 是否插入默认订阅的节点，对应配置项 insert_url
-        new_name: true, // 是否使用 Clash 新字段
 
-        // tpl 定制功能
-        tpl: {
-          surge: {
-            doh: false, // dns 查询是否使用 DoH
-          },
-          clash: {
-            doh: false,
-          },
-        },
       },
 
       loading: false,
       customSubUrl: "",
       curtomShortSubUrl: "",
-
-      dialogUploadConfigVisible: false,
-      loadConfig: "",
-      dialogLoadConfigVisible: false,
-      uploadConfig: "",
-      uploadPassword: "",
-      myBot: tgBotLink,
-      sampleConfig: remoteConfigSample,
-
-      needUdp: false, // 是否需要添加 udp 参数
     };
   },
   created() {
@@ -344,23 +133,12 @@ export default {
       this.form.sourceSubUrl = this.getLocalStorageItem("sourceSubUrl");
     }
   },
-  mounted() {
-    this.form.clientType = "clash";
-    this.getBackendVersion();
-  },
+
   methods: {
     onCopy() {
       this.$message.success("Copied!");
     },
-    goToProject() {
-      window.open(project);
-    },
-    gotoGayhub() {
-      window.open(gayhubRelease);
-    },
-    gotoRemoteConfig() {
-      window.open(remoteConfigSample);
-    },
+
     clashInstall() {
       if (this.customSubUrl === "") {
         this.$message.error("请先填写必填项，生成订阅链接");
@@ -387,8 +165,8 @@ export default {
       window.open(url + this.customSubUrl);
     },
     makeUrl() {
-      if (this.form.sourceSubUrl === "" || this.form.clientType === "") {
-        this.$message.error("订阅链接与客户端为必填项");
+      if (this.form.sourceSubUrl === "") {
+        this.$message.error("请填写订阅链接");
         return false;
       }
 
@@ -402,65 +180,9 @@ export default {
 
       this.customSubUrl =
         backend +
-        "target=" +
-        this.form.clientType +
         "&url=" +
-        encodeURIComponent(sourceSub) +
-        "&insert=" +
-        this.form.insert;
+        encodeURIComponent(sourceSub);
 
-      if (this.advanced === "2") {
-        if (this.form.remoteConfig !== "") {
-          this.customSubUrl +=
-            "&config=" + encodeURIComponent(this.form.remoteConfig);
-        }
-        if (this.form.excludeRemarks !== "") {
-          this.customSubUrl +=
-            "&exclude=" + encodeURIComponent(this.form.excludeRemarks);
-        }
-        if (this.form.includeRemarks !== "") {
-          this.customSubUrl +=
-            "&include=" + encodeURIComponent(this.form.includeRemarks);
-        }
-        if (this.form.filename !== "") {
-          this.customSubUrl +=
-            "&filename=" + encodeURIComponent(this.form.filename);
-        }
-        if (this.form.appendType) {
-          this.customSubUrl +=
-            "&append_type=" + this.form.appendType.toString();
-        }
-
-        this.customSubUrl +=
-          "&emoji=" +
-          this.form.emoji.toString() +
-          "&list=" +
-          this.form.nodeList.toString() +
-          "&tfo=" +
-          this.form.tfo.toString() +
-          "&scv=" +
-          this.form.scv.toString() +
-          "&fdn=" +
-          this.form.fdn.toString() +
-          "&sort=" +
-          this.form.sort.toString();
-
-        if (this.needUdp) {
-          this.customSubUrl += "&udp=" + this.form.udp.toString();
-        }
-
-        if (this.form.tpl.surge.doh === true) {
-          this.customSubUrl += "&surge.doh=true";
-        }
-
-        if (this.form.clientType === "clash") {
-          if (this.form.tpl.clash.doh === true) {
-            this.customSubUrl += "&clash.doh=true";
-          }
-
-          this.customSubUrl += "&new_name=" + this.form.new_name.toString();
-        }
-      }
 
       this.$copyText(this.customSubUrl);
       this.$message.success("定制订阅已复制到剪贴板");
@@ -498,127 +220,6 @@ export default {
           this.loading = false;
         });
     },
-    confirmUploadConfig() {
-      if (this.uploadConfig === "") {
-        this.$message.warning("远程配置不能为空");
-        return false;
-      }
-
-      this.loading = true;
-
-      let data = new FormData();
-      data.append("password", this.uploadPassword);
-      data.append("config", this.uploadConfig);
-
-      this.$axios
-        .post(configUploadBackend, data, {
-          header: {
-            "Content-Type": "application/form-data; charset=utf-8",
-          },
-        })
-        .then((res) => {
-          if (res.data.code === 0 && res.data.data.url !== "") {
-            this.$message.success(
-              "远程配置上传成功，配置链接已复制到剪贴板，有效期三个月望知悉"
-            );
-
-            // 自动填充至『表单-远程配置』
-            this.form.remoteConfig = res.data.data.url;
-            this.$copyText(this.form.remoteConfig);
-
-            this.dialogUploadConfigVisible = false;
-          } else {
-            this.$message.error("远程配置上传失败: " + res.data.msg);
-          }
-        })
-        .catch(() => {
-          this.$message.error("远程配置上传失败");
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-    confirmLoadConfig() {
-      // 怎么解析短链接的302和301...
-      if (this.loadConfig.indexOf("target") === -1) {
-        this.$message.error("请输入正确的订阅地址,暂不支持短链接!");
-        return;
-      }
-      let url;
-      try {
-        url = new URL(this.loadConfig);
-      } catch (error) {
-        this.$message.error("请输入正确的订阅地址!");
-        return;
-      }
-      this.form.customBackend = url.origin + url.pathname + "?";
-      let param = new URLSearchParams(url.search);
-      if (param.get("target")) {
-        let target = param.get("target");
-        if (target === "surge" && param.get("ver")) {
-          // 类型为surge,有ver
-          this.form.clientType = target + "&ver=" + param.get("ver");
-        } else if (target === "surge") {
-          //类型为surge,没有ver
-          this.form.clientType = target + "&ver=4";
-        } else {
-          //类型为其他
-          this.form.clientType = target;
-        }
-      }
-      if (param.get("url")) {
-        this.form.sourceSubUrl = param.get("url");
-      }
-      if (param.get("insert")) {
-        this.form.insert = param.get("insert") === "true";
-      }
-      if (param.get("config")) {
-        this.form.remoteConfig = param.get("config");
-      }
-      if (param.get("exclude")) {
-        this.form.excludeRemarks = param.get("exclude");
-      }
-      if (param.get("include")) {
-        this.form.includeRemarks = param.get("include");
-      }
-      if (param.get("filename")) {
-        this.form.filename = param.get("filename");
-      }
-      if (param.get("append_type")) {
-        this.form.appendType = param.get("append_type") === "true";
-      }
-      if (param.get("emoji")) {
-        this.form.emoji = param.get("emoji") === "true";
-      }
-      if (param.get("list")) {
-        this.form.nodeList = param.get("list") === "true";
-      }
-      if (param.get("tfo")) {
-        this.form.tfo = param.get("tfo") === "true";
-      }
-      if (param.get("scv")) {
-        this.form.scv = param.get("scv") === "true";
-      }
-      if (param.get("fdn")) {
-        this.form.fdn = param.get("fdn") === "true";
-      }
-      if (param.get("sort")) {
-        this.form.sort = param.get("sort") === "true";
-      }
-      if (param.get("udp")) {
-        this.form.udp = param.get("udp") === "true";
-      }
-      if (param.get("surge.doh")) {
-        this.form.tpl.surge.doh = param.get("surge.doh") === "true";
-      }
-      if (param.get("clash.doh")) {
-        this.form.tpl.clash.doh = param.get("clash.doh") === "true";
-      }
-      if (param.get("new_name")) {
-        this.form.new_name = param.get("new_name") === "true";
-      }
-      this.dialogLoadConfigVisible = false;
-    },
     backendSearch(queryString, cb) {
       let backends = this.options.backendOptions;
 
@@ -636,16 +237,7 @@ export default {
         );
       };
     },
-    getBackendVersion() {
-      this.$axios
-        .get(
-          defaultBackend.substring(0, defaultBackend.length - 5) + "/version"
-        )
-        .then((res) => {
-          this.backendVersion = res.data.replace(/backend\n$/gm, "");
-          this.backendVersion = this.backendVersion.replace("subconverter", "");
-        });
-    },
+
     saveSubUrl() {
       if (this.form.sourceSubUrl !== "") {
         this.setLocalStorageItem("sourceSubUrl", this.form.sourceSubUrl);
